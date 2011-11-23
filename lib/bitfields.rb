@@ -2,15 +2,14 @@ require 'active_support'
 require 'active_support/version'
 
 module Bitfields
+  extend ActiveSupport::Concern
+
   VERSION = File.read( File.join(File.dirname(__FILE__),'..','VERSION') ).strip
   TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE'] # taken from ActiveRecord::ConnectionAdapters::Column
   class DuplicateBitNameError < ArgumentError; end
 
-  def self.included(base)
-    class << base
-      attr_accessor :bitfields, :bitfield_options
-    end
-    base.extend Bitfields::ClassMethods
+  included do
+    class_attribute :bitfields, :bitfield_options
   end
 
   def self.extract_bits(options)

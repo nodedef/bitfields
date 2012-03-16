@@ -10,8 +10,7 @@ module Bitfields
 
   included do
     class_attribute :bitfields, :bitfield_options
-  
-  class DuplicateBitNameError < ArgumentError; end
+  end  
 
   def self.extract_bits(bit_names)
     raise Bitfields::DuplicateBitNameError if bit_names != bit_names.uniq

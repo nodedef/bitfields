@@ -10,15 +10,14 @@ module Bitfields
 
   included do
     class_attribute :bitfields, :bitfield_options
-  end
+  
+  class DuplicateBitNameError < ArgumentError; end
 
-  def self.extract_bits(options)
+  def self.extract_bits(bit_names)
+    raise Bitfields::DuplicateBitNameError if bit_names != bit_names.uniq
     bitfields = {}
-    options.keys.select{|key| key.is_a?(Fixnum) }.each do |bit|
-      raise "#{bit} is not a power of 2 !!" unless bit.to_s(2).scan('1').size == 1
-      bit_name = options.delete(bit).to_sym
-      raise DuplicateBitNameError if bitfields.include?(bit_name)
-      bitfields[bit_name] = bit
+    bit_names.each_with_index do |bit_name, i|
+      bitfields[bit_name.to_sym] = 2**i
     end
     bitfields
   end
@@ -36,10 +35,10 @@ module Bitfields
       options = (args.last.is_a?(Hash) ? args.pop.dup : {}) # since we will modify them...
       args.each_with_index{|field,i| options[2**i] = field } # add fields given in normal args to options
 
-      # extract options
+      # setup bitfields
       self.bitfields ||= {}
       self.bitfield_options ||= {}
-      bitfields[column] = Bitfields.extract_bits(options)
+      bitfields[column] = Bitfields.extract_bits(args)
       bitfield_options[column] = options
 
       # add instance methods and scopes
@@ -47,7 +46,7 @@ module Bitfields
         define_method(bit_name){ bitfield_value(bit_name) }
         define_method("#{bit_name}?"){ bitfield_value(bit_name) }
         define_method("#{bit_name}="){|value| set_bitfield_value(bit_name, value) }
-        if options[:scopes] != false
+        unless options[:scopes] === false
           scoping_method = Bitfields.ar_scoping_method
           send scoping_method, bit_name, :conditions => bitfield_sql(bit_name => true)
           send scoping_method, "not_#{bit_name}", :conditions => bitfield_sql(bit_name => false)

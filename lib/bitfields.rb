@@ -8,15 +8,18 @@ module Bitfields
   TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE'] # taken from ActiveRecord::ConnectionAdapters::Column
   class DuplicateBitNameError < ArgumentError; end
 
-  included do
-    class_attribute :bitfields, :bitfield_options
-  end  
-
+  def self.included(base)
+    class << base
+      attr_accessor :bitfields, :bitfield_options
+    end
+    base.extend Bitfields::ClassMethods
+  end
+  
   def self.extract_bits(bit_names)
     raise Bitfields::DuplicateBitNameError if bit_names != bit_names.uniq
     bitfields = {}
     bit_names.each_with_index do |bit_name, i|
-      bitfields[bit_name.to_sym] = 2**i
+        bitfields[bit_name.to_sym] = 2**i
     end
     bitfields
   end
@@ -32,8 +35,7 @@ module Bitfields
       # prepare ...
       column = column.to_sym
       options = (args.last.is_a?(Hash) ? args.pop.dup : {}) # since we will modify them...
-      args.each_with_index{|field,i| options[2**i] = field } # add fields given in normal args to options
-
+      
       # setup bitfields
       self.bitfields ||= {}
       self.bitfield_options ||= {}

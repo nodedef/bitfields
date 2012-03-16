@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
     "spec/database.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/grosser/bitfields}
+  s.homepage = %q{http://github.com/nodedef/bitfields}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.6.2}
   s.summary = %q{Save migrations and columns by storing multiple booleans in a single integer.}

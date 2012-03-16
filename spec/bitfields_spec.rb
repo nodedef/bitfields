@@ -59,7 +59,7 @@ end
 
 class InitializedUser < User
   set_table_name 'users'
-  bitfield :bits, 1 => :seller, 2 => :insane, 4 => :stupid, :scopes => false
+  bitfield :bits, :seller, :insane, :stupid, :scopes => false
 
   after_initialize do
     self.seller = true

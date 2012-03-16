@@ -12,10 +12,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = 'bitfields'
-    gem.summary = "Save migrations and columns by storing multiple booleans in a single integer."
-    gem.email = "grosser.michael@gmail.com"
-    gem.homepage = "http://github.com/grosser/#{gem.name}"
-    gem.authors = ["Michael Grosser"]
+    gem.summary = "Save migrations and columns by storing multiple booleans in a single integer. Variation on Micheal Grosser's version http://github.com/grosser/#{gem.name}."
+    gem.email = "driedtoast@gmail.com"
+    gem.homepage = "http://github.com/nodedef/#{gem.name}"
+    gem.authors = ["Daniel Marchant"]
   end
 
   Jeweler::GemcutterTasks.new
